@@ -12,7 +12,10 @@ public class HeaderProcessor {
             if (!line.isEmpty()) {
                 if (line.startsWith("type=")) hasType = true;
                 if (line.startsWith("status=")) hasStatus = true;
-                if (line.equals("~~~~~~")) hasSeparator = true;
+                if (line.equals("~~~~~~")) {
+                    hasSeparator = true;
+                    break;
+                }
             }
         }
         return hasType && hasStatus && hasSeparator;
