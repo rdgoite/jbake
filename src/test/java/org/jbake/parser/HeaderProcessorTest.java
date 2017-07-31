@@ -15,12 +15,12 @@ public class HeaderProcessorTest {
     @Test
     public void testIsHeaderValid() {
         //given:
-        String typeProperty = "type=post";
-        String statusProperty = "status=published";
+        List<String> hasHeader = asList("", "type = post", "status\t= published ", "optional=value",
+                "\tsetting\t= anotherConfig  ", HEADER_SEPARATOR, "body text");
 
         //and:
-        List<String> hasHeader = asList("", typeProperty, statusProperty, "optional=value",
-                " setting=anotherConfig  ", HEADER_SEPARATOR, "body text");
+        String typeProperty = "type=post";
+        String statusProperty = "status=published";
 
         //and:
         List<String> noType = asList(statusProperty, HEADER_SEPARATOR, "body text");
