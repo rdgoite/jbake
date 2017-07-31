@@ -8,7 +8,7 @@ public class HeaderProcessor {
     public static final String HEADER_SEPARATOR = "~~~~~~";
 
     private static final Pattern OPTION_PATTERN = Pattern.compile(
-            "^\\p{Space}*\\p{Alnum}+\\p{Space}*=\\p{Space}*\\p{Alnum}+\\p{Space}*$");
+            "^\\p{Space}*\\p{Alnum}+\\p{Space}*=\\p{Space}*\\p{ASCII}+\\p{Space}*$");
 
     public boolean isHeaderValid(List<String> contents) {
         boolean hasType = false;

@@ -16,7 +16,7 @@ public class HeaderProcessorTest {
     public void testIsHeaderValid() {
         //given:
         List<String> hasHeader = asList("", "type = post", "status\t= published ", "optional=value",
-                "\tsetting\t= anotherConfig  ", HEADER_SEPARATOR, "body text");
+                "\tsetting\t= anotherConfig  ", "date=2017-08-01", HEADER_SEPARATOR, "body text");
 
         //and:
         String typeProperty = "type=post";
