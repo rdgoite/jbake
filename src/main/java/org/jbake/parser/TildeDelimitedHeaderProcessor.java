@@ -5,6 +5,7 @@ import org.apache.commons.configuration.Configuration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
@@ -12,7 +13,7 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
     public static final String HEADER_SEPARATOR = "~~~~~~";
 
     private static final Pattern OPTION_PATTERN = Pattern.compile(
-            "^\\p{Space}*\\p{Alnum}+\\p{Space}*=\\p{Space}*\\p{ASCII}+\\p{Space}*$");
+            "^\\p{Space}*(\\p{Alnum}+)\\p{Space}*=\\p{Space}*(\\p{ASCII}+)\\p{Space}*$");
 
     @Override
     public boolean isHeaderValid(List<String> contents) {
@@ -37,7 +38,12 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
 
     @Override
     public Map<String, Object> processHeader(Configuration configuration, List<String> contents) {
-        return new HashMap<String, Object>();
+        Map<String, Object> header = new HashMap<String, Object>();
+        for (String line : contents) {
+            Matcher matcher = OPTION_PATTERN.matcher(line);
+            if (matcher.matches()) header.put(matcher.group(1), matcher.group(2));
+        }
+        return header;
     }
 
 }

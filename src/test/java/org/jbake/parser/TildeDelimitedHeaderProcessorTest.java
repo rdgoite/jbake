@@ -8,6 +8,7 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.jbake.parser.TildeDelimitedHeaderProcessor.HEADER_SEPARATOR;
 import static org.mockito.Mockito.mock;
 
@@ -55,14 +56,16 @@ public class TildeDelimitedHeaderProcessorTest {
     public void testProcessHeader() {
         //given:
         List<String> contents = asList("title=About", "date=2013-02-27", "type=page",
-                "status=published", "~~~~~~", "", "All about stuff!");
+                "status=published", HEADER_SEPARATOR, "", "All about stuff!");
 
         //when:
         Configuration configuration = mock(Configuration.class);
         Map<String, Object> header = headerProcessor.processHeader(configuration, contents);
 
         //then:
-        assertThat(header).isNotNull();
+        assertThat(header).contains(
+                entry("title", "About"), entry("type", "page")
+        );
     }
 
 }
