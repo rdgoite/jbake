@@ -19,11 +19,18 @@ public class HeaderProcessorTest {
         String separator = "~~~~~~";
 
         //and:
-        List<String> hasHeader = asList("", typeProperty, statusProperty, separator, "body text");
+        List<String> hasHeader = asList("", typeProperty, statusProperty, "optional=value",
+                " setting=anotherConfig  ", separator, "body text");
+
+        //and:
         List<String> noType = asList(statusProperty, separator, "body text");
         List<String> noStatus = asList(typeProperty, separator, "\n", "some text");
         List<String> noSeparator = asList(typeProperty, statusProperty, "this is the body");
         List<String> misplacedSeparator = asList(statusProperty, separator, typeProperty, "body");
+        List<String> invalidOption = asList(statusProperty, typeProperty, "this is not valid",
+                separator, "this is the body");
+        List<String> invalidOptionWithEqualSign = asList(statusProperty, typeProperty,
+                "=hasequalsign=", "valid=option", separator, "body text");
 
         //expect:
         assertThat(headerProcessor.isHeaderValid(hasHeader)).isTrue();
@@ -34,6 +41,10 @@ public class HeaderProcessorTest {
         assertThat(headerProcessor.isHeaderValid(noSeparator)).as("no separator").isFalse();
         assertThat(headerProcessor.isHeaderValid(misplacedSeparator))
                 .as("misplaced separator").isFalse();
+        assertThat(headerProcessor.isHeaderValid(invalidOption))
+                .as("invalid option").isFalse();
+        assertThat(headerProcessor.isHeaderValid(invalidOptionWithEqualSign))
+                .as("invalid option with equal sign").isFalse();
     }
 
 }
