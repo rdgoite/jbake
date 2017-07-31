@@ -1,6 +1,10 @@
 package org.jbake.parser;
 
+import org.apache.commons.configuration.Configuration;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
@@ -29,6 +33,11 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
             }
         }
         return hasType && hasStatus && hasSeparator && wellFormedOptions;
+    }
+
+    @Override
+    public Map<String, Object> processHeader(Configuration configuration, List<String> contents) {
+        return new HashMap<String, Object>();
     }
 
 }

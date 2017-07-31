@@ -1,12 +1,15 @@
 package org.jbake.parser;
 
+import org.apache.commons.configuration.Configuration;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbake.parser.TildeDelimitedHeaderProcessor.HEADER_SEPARATOR;
+import static org.mockito.Mockito.mock;
 
 public class TildeDelimitedHeaderProcessorTest {
 
@@ -46,6 +49,20 @@ public class TildeDelimitedHeaderProcessorTest {
                 .as("invalid option").isFalse();
         assertThat(headerProcessor.isHeaderValid(invalidOptionWithEqualSign))
                 .as("invalid option with equal sign").isFalse();
+    }
+
+    @Test
+    public void testProcessHeader() {
+        //given:
+        List<String> contents = asList("title=About", "date=2013-02-27", "type=page",
+                "status=published", "~~~~~~", "", "All about stuff!");
+
+        //when:
+        Configuration configuration = mock(Configuration.class);
+        Map<String, Object> header = headerProcessor.processHeader(configuration, contents);
+
+        //then:
+        assertThat(header).isNotNull();
     }
 
 }
