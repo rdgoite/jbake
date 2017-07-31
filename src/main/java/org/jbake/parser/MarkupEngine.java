@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,8 @@ import org.slf4j.LoggerFactory;
 public abstract class MarkupEngine implements ParserEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(MarkupEngine.class);
     private static final String HEADER_SEPARATOR = "~~~~~~";
+
+    private HeaderProcessor headerProcessor = new HeaderProcessor();
 
     /**
      * Tests if this markup engine can process the document.
@@ -75,7 +76,7 @@ public abstract class MarkupEngine implements ParserEngine {
           IOUtils.closeQuietly(is);
         }
 
-        boolean hasHeader = hasHeader(fileContents);
+        boolean hasHeader = headerProcessor.isHeaderValid(fileContents);
         ParserContext context = new ParserContext(
                 file,
                 fileContents,
@@ -144,52 +145,6 @@ public abstract class MarkupEngine implements ParserEngine {
 
         return content;
 	}
-
-    /**
-     * Checks if the file has a meta-data header.
-     *
-     * @param contents Contents of file
-     * @return true if header exists, false if not
-     */
-    private boolean hasHeader(List<String> contents) {
-        boolean headerValid = false;
-        boolean headerSeparatorFound = false;
-        boolean statusFound = false;
-        boolean typeFound = false;
-
-        List<String> header = new ArrayList<String>();
-
-        for (String line : contents) {
-        	if (!line.isEmpty()){
-        		header.add(line);
-        	}
-            if (line.contains("=")) {
-                if (line.startsWith("type=")) {
-                    typeFound = true;
-                }
-                if (line.startsWith("status=")) {
-                    statusFound = true;
-                }
-            }
-            if (line.equals(HEADER_SEPARATOR)) {
-                headerSeparatorFound = true;
-                header.remove(line);
-                break;
-            }
-        }
-
-        if (headerSeparatorFound) {
-            headerValid = true;
-            for (String headerLine : header) {
-                if (!headerLine.contains("=")) {
-                    headerValid = false;
-                    break;
-                }
-            }
-        }
-
-        return headerValid && statusFound && typeFound;
-    }
 
     /**
      * Process the header of the file.
