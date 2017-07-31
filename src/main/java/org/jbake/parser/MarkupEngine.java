@@ -32,7 +32,7 @@ public abstract class MarkupEngine implements ParserEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(MarkupEngine.class);
     private static final String HEADER_SEPARATOR = "~~~~~~";
 
-    private HeaderProcessor headerProcessor = new HeaderProcessor();
+    private HeaderProcessor headerProcessor = new TildeDelimitedHeaderProcessor();
 
     /**
      * Tests if this markup engine can process the document.

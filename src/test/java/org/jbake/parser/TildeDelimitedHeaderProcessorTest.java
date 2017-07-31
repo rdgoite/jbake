@@ -6,11 +6,11 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.jbake.parser.HeaderProcessor.HEADER_SEPARATOR;
+import static org.jbake.parser.TildeDelimitedHeaderProcessor.HEADER_SEPARATOR;
 
-public class HeaderProcessorTest {
+public class TildeDelimitedHeaderProcessorTest {
 
-    private HeaderProcessor headerProcessor = new HeaderProcessor();
+    private TildeDelimitedHeaderProcessor headerProcessor = new TildeDelimitedHeaderProcessor();
 
     @Test
     public void testIsHeaderValid() {
