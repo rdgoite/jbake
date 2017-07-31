@@ -4,7 +4,7 @@ import java.util.List;
 
 public class HeaderProcessor {
 
-    public boolean hasHeader(List<String> contents) {
+    public boolean isHeaderValid(List<String> contents) {
         boolean hasType = false;
         boolean hasStatus = false;
         boolean hasSeparator = false;

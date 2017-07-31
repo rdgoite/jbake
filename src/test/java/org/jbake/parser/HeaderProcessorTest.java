@@ -12,7 +12,7 @@ public class HeaderProcessorTest {
     private HeaderProcessor headerProcessor = new HeaderProcessor();
 
     @Test
-    public void testHasHeader() {
+    public void testIsHeaderValid() {
         //given:
         String typeProperty = "type=post";
         String statusProperty = "status=published";
@@ -26,13 +26,13 @@ public class HeaderProcessorTest {
         List<String> misplacedSeparator = asList(statusProperty, separator, typeProperty, "body");
 
         //expect:
-        assertThat(headerProcessor.hasHeader(hasHeader)).isTrue();
+        assertThat(headerProcessor.isHeaderValid(hasHeader)).isTrue();
 
         //and:
-        assertThat(headerProcessor.hasHeader(noType)).as("no type").isFalse();
-        assertThat(headerProcessor.hasHeader(noStatus)).as("no status").isFalse();
-        assertThat(headerProcessor.hasHeader(noSeparator)).as("no separator").isFalse();
-        assertThat(headerProcessor.hasHeader(misplacedSeparator))
+        assertThat(headerProcessor.isHeaderValid(noType)).as("no type").isFalse();
+        assertThat(headerProcessor.isHeaderValid(noStatus)).as("no status").isFalse();
+        assertThat(headerProcessor.isHeaderValid(noSeparator)).as("no separator").isFalse();
+        assertThat(headerProcessor.isHeaderValid(misplacedSeparator))
                 .as("misplaced separator").isFalse();
     }
 
