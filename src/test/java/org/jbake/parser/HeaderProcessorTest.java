@@ -6,6 +6,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.jbake.parser.HeaderProcessor.HEADER_SEPARATOR;
 
 public class HeaderProcessorTest {
 
@@ -16,21 +17,21 @@ public class HeaderProcessorTest {
         //given:
         String typeProperty = "type=post";
         String statusProperty = "status=published";
-        String separator = "~~~~~~";
 
         //and:
         List<String> hasHeader = asList("", typeProperty, statusProperty, "optional=value",
-                " setting=anotherConfig  ", separator, "body text");
+                " setting=anotherConfig  ", HEADER_SEPARATOR, "body text");
 
         //and:
-        List<String> noType = asList(statusProperty, separator, "body text");
-        List<String> noStatus = asList(typeProperty, separator, "\n", "some text");
+        List<String> noType = asList(statusProperty, HEADER_SEPARATOR, "body text");
+        List<String> noStatus = asList(typeProperty, HEADER_SEPARATOR, "\n", "some text");
         List<String> noSeparator = asList(typeProperty, statusProperty, "this is the body");
-        List<String> misplacedSeparator = asList(statusProperty, separator, typeProperty, "body");
+        List<String> misplacedSeparator = asList(statusProperty, HEADER_SEPARATOR, typeProperty,
+                "body");
         List<String> invalidOption = asList(statusProperty, typeProperty, "this is not valid",
-                separator, "this is the body");
+                HEADER_SEPARATOR, "this is the body");
         List<String> invalidOptionWithEqualSign = asList(statusProperty, typeProperty,
-                "=hasequalsign=", "valid=option", separator, "body text");
+                "=hasequalsign=", "valid=option", HEADER_SEPARATOR, "body text");
 
         //expect:
         assertThat(headerProcessor.isHeaderValid(hasHeader)).isTrue();

@@ -5,8 +5,10 @@ import java.util.regex.Pattern;
 
 public class HeaderProcessor {
 
+    public static final String HEADER_SEPARATOR = "~~~~~~";
+
     /*TODO consider white spaces using the following pattern (also consider horizontal tabs):
-          "^\\p{Space}*\\p{Alnum}+\\p{Space}*=\\p{Space}*\\p{Alnum}+\\p{Space}*$"
+              "^\\p{Space}*\\p{Alnum}+\\p{Space}*=\\p{Space}*\\p{Alnum}+\\p{Space}*$"
     */
     private static final Pattern OPTION_PATTERN = Pattern.compile(
             "^\\p{Space}*\\p{Alnum}+=\\p{Alnum}+\\p{Space}*$");
@@ -21,11 +23,9 @@ public class HeaderProcessor {
                 if (OPTION_PATTERN.matcher(line).matches()) {
                     if (line.startsWith("type=")) hasType = true;
                     if (line.startsWith("status=")) hasStatus = true;
-                } else if (line.equals("~~~~~~")) {
-                    hasSeparator = true;
-                    break;
                 } else {
-                    wellFormedOptions = false;
+                    if (line.equals(HEADER_SEPARATOR)) hasSeparator = true;
+                    else wellFormedOptions = false;
                     break;
                 }
             }
