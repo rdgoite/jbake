@@ -14,10 +14,17 @@ public class HeaderProcessorTest {
     @Test
     public void testHasHeader() {
         //given:
-        List<String> contents = asList("", "type=post", "status=published", "~~~~~~", "body text");
+        String typeProperty = "type=post";
+        String statusProperty = "status=published";
+        String separator = "~~~~~~";
+
+        //and:
+        List<String> hasHeader = asList("", typeProperty, statusProperty, separator, "body text");
+        List<String> noType = asList(statusProperty, separator, "body text");
 
         //expect:
-        assertThat(headerProcessor.hasHeader(contents)).isTrue();
+        assertThat(headerProcessor.hasHeader(hasHeader)).isTrue();
+        assertThat(headerProcessor.hasHeader(noType)).as("no type = no header").isFalse();
     }
 
 }
