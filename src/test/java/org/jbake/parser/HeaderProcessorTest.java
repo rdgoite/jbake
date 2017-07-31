@@ -21,10 +21,12 @@ public class HeaderProcessorTest {
         //and:
         List<String> hasHeader = asList("", typeProperty, statusProperty, separator, "body text");
         List<String> noType = asList(statusProperty, separator, "body text");
+        List<String> noStatus = asList(typeProperty, separator, "\n", "some text");
 
         //expect:
         assertThat(headerProcessor.hasHeader(hasHeader)).isTrue();
         assertThat(headerProcessor.hasHeader(noType)).as("no type = no header").isFalse();
+        assertThat(headerProcessor.hasHeader(noStatus)).as("no status = no header").isFalse();
     }
 
 }
