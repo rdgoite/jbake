@@ -42,6 +42,8 @@ public class TildeDelimitedHeaderProcessorTest {
         List<String> invalidOptionWithEqualSign = asList(statusProperty, typeProperty,
                 "=hasequalsign=", "valid=option", HEADER_SEPARATOR, "body text");
 
+        //TODO add check for entries that begin with \uFEFF (BOM)
+
         //expect:
         assertThat(headerProcessor.isHeaderValid(hasHeader)).isTrue();
 
@@ -70,9 +72,10 @@ public class TildeDelimitedHeaderProcessorTest {
         calendar.set(Calendar.MILLISECOND, 0);
         Date date = calendar.getTime();
 
+        //and:
+        Configuration configuration = setUpConfiguration();
+
         //when:
-        Configuration configuration = mock(Configuration.class);
-        doReturn("yyyy-MM-dd").when(configuration).getString(ConfigUtil.Keys.DATE_FORMAT);
         Map<String, Object> header = headerProcessor.processHeader(configuration, contents);
 
         //then:
@@ -80,6 +83,30 @@ public class TildeDelimitedHeaderProcessorTest {
                 entry("title", "About"), entry("type", "page"), entry("status", "published"),
                 entry("date", date)
         );
+    }
+
+    @Test
+    public void testProcessHeaderWithBOMKey() {
+        //given:
+        List<String> contents = asList("type=post", "status=published", "\uFEFFkey=value",
+                HEADER_SEPARATOR, "", "this is the body");
+
+        //and:
+        Configuration configuration = setUpConfiguration();
+
+        //when:
+        Map<String, Object> header = headerProcessor.processHeader(configuration, contents);
+
+        //then:
+        assertThat(header).containsOnly(
+                entry("type", "post"), entry("status", "published"), entry("key", "value")
+        );
+    }
+
+    private Configuration setUpConfiguration() {
+        Configuration configuration = mock(Configuration.class);
+        doReturn("yyyy-MM-dd").when(configuration).getString(ConfigUtil.Keys.DATE_FORMAT);
+        return configuration;
     }
 
 }

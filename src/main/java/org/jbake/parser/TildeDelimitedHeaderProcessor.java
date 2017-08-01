@@ -19,7 +19,7 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
     public static final String HEADER_SEPARATOR = "~~~~~~";
 
     private static final Pattern OPTION_PATTERN = Pattern.compile(
-            "^\\p{Space}*(\\p{Alnum}+)\\p{Space}*=\\p{Space}*(\\p{ASCII}+)\\p{Space}*$");
+            "^\uFEFF??\\p{Space}*(\\p{Alnum}+)\\p{Space}*=\\p{Space}*(\\p{ASCII}+)\\p{Space}*$");
 
     @Override
     public boolean isHeaderValid(List<String> contents) {
@@ -49,7 +49,7 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
         for (String line : contents) {
             Matcher matcher = OPTION_PATTERN.matcher(line);
             if (matcher.matches()) {
-                String key = matcher.group(1);
+                String key = matcher.group(1).trim().replace('\uFEFF', '\u0000');
                 Object value = matcher.group(2);
                 if (Crawler.Attributes.DATE.equalsIgnoreCase(key))  {
                     try {
