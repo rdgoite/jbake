@@ -1,8 +1,12 @@
 package org.jbake.parser;
 
 import org.apache.commons.configuration.Configuration;
+import org.jbake.app.ConfigUtil;
+import org.jbake.app.Crawler;
 import org.junit.Test;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +14,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.jbake.parser.TildeDelimitedHeaderProcessor.HEADER_SEPARATOR;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 public class TildeDelimitedHeaderProcessorTest {
@@ -55,16 +60,25 @@ public class TildeDelimitedHeaderProcessorTest {
     @Test
     public void testProcessHeader() {
         //given:
-        List<String> contents = asList("title=About", "date=2013-02-27", "type=page",
+        String dateOption = String.format("%s=2013-02-27", Crawler.Attributes.DATE);
+        List<String> contents = asList("title=About", dateOption, "type=page",
                 "status=published", HEADER_SEPARATOR, "", "All about stuff!");
+
+        //and:
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2013, 1, 27, 0, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date date = calendar.getTime();
 
         //when:
         Configuration configuration = mock(Configuration.class);
+        doReturn("yyyy-MM-dd").when(configuration).getString(ConfigUtil.Keys.DATE_FORMAT);
         Map<String, Object> header = headerProcessor.processHeader(configuration, contents);
 
         //then:
-        assertThat(header).contains(
-                entry("title", "About"), entry("type", "page")
+        assertThat(header).containsOnly(
+                entry("title", "About"), entry("type", "page"), entry("status", "published"),
+                entry("date", date)
         );
     }
 

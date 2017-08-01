@@ -1,7 +1,13 @@
 package org.jbake.parser;
 
 import org.apache.commons.configuration.Configuration;
+import org.jbake.app.ConfigUtil;
+import org.jbake.app.ConfigUtil.Keys;
+import org.jbake.app.Crawler;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +45,22 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
     @Override
     public Map<String, Object> processHeader(Configuration configuration, List<String> contents) {
         Map<String, Object> header = new HashMap<String, Object>();
+        DateFormat dateFormat = new SimpleDateFormat(configuration.getString(Keys.DATE_FORMAT));
         for (String line : contents) {
             Matcher matcher = OPTION_PATTERN.matcher(line);
-            if (matcher.matches()) header.put(matcher.group(1), matcher.group(2));
+            if (matcher.matches()) {
+                String key = matcher.group(1);
+                Object value = matcher.group(2);
+                if (Crawler.Attributes.DATE.equalsIgnoreCase(key))  {
+                    try {
+                        value = dateFormat.parse(value.toString());
+                    } catch (ParseException e) {
+                        //TODO handle this better
+                        e.printStackTrace();
+                    }
+                }
+                header.put(key, value);
+            }
         }
         return header;
     }
