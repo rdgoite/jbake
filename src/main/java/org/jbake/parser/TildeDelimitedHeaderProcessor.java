@@ -21,6 +21,9 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
     private static final Pattern OPTION_PATTERN = Pattern.compile(
             "^\uFEFF??\\p{Space}*(\\p{Alnum}+)\\p{Space}*=\\p{Space}*(\\p{ASCII}+)\\p{Space}*$");
 
+    private static final char BYTE_ORDER_MARKER = '\uFEFF';
+    private static final char BLANK = '\u0000';
+
     @Override
     public boolean isHeaderValid(List<String> contents) {
         boolean hasType = false;
@@ -49,8 +52,8 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
         for (String line : contents) {
             Matcher matcher = OPTION_PATTERN.matcher(line);
             if (matcher.matches()) {
-                String key = matcher.group(1).trim().replace('\uFEFF', '\u0000');
-                Object value = matcher.group(2);
+                String key = matcher.group(1).trim().replace(BYTE_ORDER_MARKER, BLANK);
+                Object value = matcher.group(2).trim();
                 if (Crawler.Attributes.DATE.equalsIgnoreCase(key))  {
                     try {
                         value = dateFormat.parse(value.toString());

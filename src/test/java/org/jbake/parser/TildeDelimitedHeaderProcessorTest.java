@@ -63,7 +63,7 @@ public class TildeDelimitedHeaderProcessorTest {
     public void testProcessHeader() {
         //given:
         String dateOption = String.format("%s=2013-02-27", Crawler.Attributes.DATE);
-        List<String> contents = asList("title=About", dateOption, "type=page",
+        List<String> contents = asList("title=About", dateOption, "type= page  ",
                 "status=published", HEADER_SEPARATOR, "", "All about stuff!");
 
         //and:
