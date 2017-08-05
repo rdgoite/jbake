@@ -105,9 +105,9 @@ public class TildeDelimitedHeaderProcessorTest {
     @Test
     public void testProcessHeaderContainingTags() {
         //given:
-        String tags = String.format("%s=java,programming,algorithms", TAGS);
-        List<String> contents = asList("type=post", "status=published", tags, HEADER_SEPARATOR,
-                "", "this is the body");
+        String tagsOption = String.format("%s=java ,programming\t,algorithms", TAGS);
+        List<String> contents = asList("type=post", "status=published", tagsOption,
+                HEADER_SEPARATOR, "", "this is the body");
 
         //when:
         Map<String, Object> header = headerProcessor.processHeader(setUpConfiguration(), contents);
@@ -116,6 +116,10 @@ public class TildeDelimitedHeaderProcessorTest {
         assertThat(header).containsKey(TAGS);
         Object tagsObject = header.get(TAGS);
         assertThat(tagsObject).isInstanceOf(String[].class);
+
+        //and:
+        String[] tags = (String[]) tagsObject;
+        assertThat(tags).containsOnly("java", "programming", "algorithms");
     }
 
     private Configuration setUpConfiguration() {
