@@ -62,6 +62,9 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
                         e.printStackTrace();
                     }
                 }
+                if (Crawler.Attributes.TAGS.equalsIgnoreCase(key)) {
+                    value = new String[0];
+                }
                 header.put(key, value);
             }
         }

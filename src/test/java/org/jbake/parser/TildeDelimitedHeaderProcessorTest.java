@@ -13,6 +13,8 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
+import static org.jbake.app.Crawler.Attributes.DATE;
+import static org.jbake.app.Crawler.Attributes.TAGS;
 import static org.jbake.parser.TildeDelimitedHeaderProcessor.HEADER_SEPARATOR;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -62,7 +64,7 @@ public class TildeDelimitedHeaderProcessorTest {
     @Test
     public void testProcessHeader() {
         //given:
-        String dateOption = String.format("%s=2013-02-27", Crawler.Attributes.DATE);
+        String dateOption = String.format("%s=2013-02-27", DATE);
         List<String> contents = asList("title=About", dateOption, "type= page  ",
                 "status=published", HEADER_SEPARATOR, "", "All about stuff!");
 
@@ -91,16 +93,29 @@ public class TildeDelimitedHeaderProcessorTest {
         List<String> contents = asList("type=post", "status=published", "\uFEFFkey=value",
                 HEADER_SEPARATOR, "", "this is the body");
 
-        //and:
-        Configuration configuration = setUpConfiguration();
-
         //when:
-        Map<String, Object> header = headerProcessor.processHeader(configuration, contents);
+        Map<String, Object> header = headerProcessor.processHeader(setUpConfiguration(), contents);
 
         //then:
         assertThat(header).containsOnly(
                 entry("type", "post"), entry("status", "published"), entry("key", "value")
         );
+    }
+
+    @Test
+    public void testProcessHeaderContainingTags() {
+        //given:
+        String tags = String.format("%s=java,programming,algorithms", TAGS);
+        List<String> contents = asList("type=post", "status=published", tags, HEADER_SEPARATOR,
+                "", "this is the body");
+
+        //when:
+        Map<String, Object> header = headerProcessor.processHeader(setUpConfiguration(), contents);
+
+        //then:
+        assertThat(header).containsKey(TAGS);
+        Object tagsObject = header.get(TAGS);
+        assertThat(tagsObject).isInstanceOf(String[].class);
     }
 
     private Configuration setUpConfiguration() {
