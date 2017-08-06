@@ -1,8 +1,10 @@
 package org.jbake.parser;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.configuration.Configuration;
 import org.jbake.app.ConfigUtil.Keys;
 import org.jbake.app.Crawler;
+import org.json.simple.JSONValue;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,6 +24,8 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
 
     private static final char BYTE_ORDER_MARKER = '\uFEFF';
     private static final char BLANK = '\u0000';
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public boolean isHeaderValid(List<String> contents) {
@@ -67,7 +71,7 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
                     }
                     value = tags;
                 } else if (value.toString().startsWith("{") && value.toString().endsWith("}")) {
-                    value = new HashMap<String, String>();
+                    value = JSONValue.parse(value.toString());
                 }
                 header.put(key, value);
             }

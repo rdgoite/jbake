@@ -125,9 +125,9 @@ public class TildeDelimitedHeaderProcessorTest {
     public void testProcessHeaderContainingJsonValue() {
         //given:
         String jsonOption = new StringBuilder("json={")
-                .append("\"description\"=\"test\"").append(",")
-                .append("\"count\"=7").append(",")
-                .append("\"message\"=\"JSON message\"")
+                .append("\"description\":\"test\"").append(",")
+                .append("\"count\":7").append(",")
+                .append("\"message\":\"JSON message\"")
                 .append("}")
                 .toString();
 
@@ -141,6 +141,14 @@ public class TildeDelimitedHeaderProcessorTest {
         assertThat(header).containsKey("json");
         Object jsonObject = header.get("json");
         assertThat(jsonObject).isInstanceOf(Map.class);
+
+        //and:
+        Map<String, Object> jsonMap = (Map<String, Object>) jsonObject;
+        assertThat(jsonMap).containsOnly(
+                entry("description", "test"),
+                entry("count", 7L),
+                entry("message", "JSON message")
+        );
     }
 
     private Configuration setUpConfiguration() {
