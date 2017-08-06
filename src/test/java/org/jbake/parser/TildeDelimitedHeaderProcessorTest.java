@@ -2,7 +2,6 @@ package org.jbake.parser;
 
 import org.apache.commons.configuration.Configuration;
 import org.jbake.app.ConfigUtil;
-import org.jbake.app.Crawler;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -120,6 +119,28 @@ public class TildeDelimitedHeaderProcessorTest {
         //and:
         String[] tags = (String[]) tagsObject;
         assertThat(tags).containsOnly("java", "programming", "algorithms");
+    }
+
+    @Test
+    public void testProcessHeaderContainingJsonValue() {
+        //given:
+        String jsonOption = new StringBuilder("json={")
+                .append("\"description\"=\"test\"").append(",")
+                .append("\"count\"=7").append(",")
+                .append("\"message\"=\"JSON message\"")
+                .append("}")
+                .toString();
+
+        List<String> contents = asList("type=page", "status=published", jsonOption,
+                HEADER_SEPARATOR, "", "Hello, world!");
+
+        //when:
+        Map<String, Object> header = headerProcessor.processHeader(setUpConfiguration(), contents);
+
+        //then:
+        assertThat(header).containsKey("json");
+        Object jsonObject = header.get("json");
+        assertThat(jsonObject).isInstanceOf(Map.class);
     }
 
     private Configuration setUpConfiguration() {

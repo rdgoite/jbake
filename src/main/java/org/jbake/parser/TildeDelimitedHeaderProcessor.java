@@ -1,7 +1,6 @@
 package org.jbake.parser;
 
 import org.apache.commons.configuration.Configuration;
-import org.jbake.app.ConfigUtil;
 import org.jbake.app.ConfigUtil.Keys;
 import org.jbake.app.Crawler;
 
@@ -67,6 +66,8 @@ public class TildeDelimitedHeaderProcessor implements HeaderProcessor {
                         tags[index] = tags[index].trim();
                     }
                     value = tags;
+                } else if (value.toString().startsWith("{") && value.toString().endsWith("}")) {
+                    value = new HashMap<String, String>();
                 }
                 header.put(key, value);
             }
